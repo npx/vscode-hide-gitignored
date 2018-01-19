@@ -2,7 +2,7 @@
     "name": "hide-gitignored",
     "displayName": "hide-gitignored",
     "description": "Hide files from the Explorer panel that match the patterns in .gitignore",
-    "version": "0.0.1",
+    "version": "1.0.0",
     "publisher": "npx",
     "engines": {
         "vscode": "^1.19.0"
@@ -11,13 +11,13 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.sayHello"
+        "onCommand:extension.hideGitignored"
     ],
     "main": "./out/extension",
     "contributes": {
         "commands": [{
-            "command": "extension.sayHello",
-            "title": "Hello World"
+            "command": "extension.hideGitignored",
+            "title": "Hide Gitignored: Hide files ignored by .gitignore"
         }]
     },
     "scripts": {
