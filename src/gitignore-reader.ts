@@ -1,4 +1,7 @@
-import { TextDocument } from 'vscode';
+import { dirname } from 'path';
+import { TextDocument, workspace } from 'vscode';
+
+import { Gitignore } from './gitignore.model';
 
 /**
  * Read the .gitignore file line-by-line
@@ -8,18 +11,19 @@ import { TextDocument } from 'vscode';
  */
 export class GitignoreReader {
     /**
-     * Read Textdocument into a string array
+     * Read TextDocument into a string array, wrapped in Gitignore
      *
      * @param {TextDocument} document
-     * @returns {string[]}
+     * @returns {Gitignore}
      * @memberof GitignoreReader
      */
-    public read(document: TextDocument): string[] {
+    public read(document: TextDocument): Gitignore {
         const lineCount = document.lineCount;
         const lines: string[] = [];
         for (let index = 0; index < lineCount; index++) {
             lines.push(document.lineAt(index).text);
         }
-        return lines;
+        const path = dirname(workspace.asRelativePath(document.fileName));
+        return { lines, path };
     }
 }
