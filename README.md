@@ -1,13 +1,11 @@
 # hide-gitignored
 
-This extension hides files ignored by a `.gitignore` file from the file Explorer by converting
-the `.gitignore`'s patterns to globs that vscode can interpret when added to the `files.exclude` 
-workspace settings.
+Hide files from the file Explorer that are ignored by your workspace's 
+`.gitignore` files.
 
-## Features
-
-The extension registers a command you can use to parse your project's `.gitignore` and update your
-workspace settings.
+Upon running the registered command, the workspace's `.gitignore` files are
+read and converted to `files.exclude` rules that vscode can interpret.
+Your workspace settings will be created or updated.
 
 ## Release Notes
 
@@ -23,6 +21,5 @@ which unfortunately is not maintained anymore. I have been given
 re-release.
 
 ## TODO
-* multiple .gitignores (subfolders)
-* run on save of .gitignore [+setting]
+* run on saving .gitignore files [+ setting]
 * tests
