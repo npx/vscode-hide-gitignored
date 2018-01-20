@@ -1,3 +1,4 @@
+import { Gitignore } from './gitignore.model';
 import { Pattern } from './pattern.model';
 
 /**
@@ -8,15 +9,15 @@ import { Pattern } from './pattern.model';
  */
 export class PatternConverter {
     /**
-     * Convert multiple .gitignore lines to vscode style patterns
+     * Convert a Gitignore to a Pattern[]
      *
-     * @param {string[]} lines
+     * @param {Gitignore} gitgnore
      * @returns {Pattern[]}
      * @memberof PatternConverter
      */
-    public convert(lines: string[]): Pattern[] {
-        return lines
-            .map((line) => this._convertToPattern(line))
+    public convert(gitignore: Gitignore): Pattern[] {
+        return gitignore.lines
+            .map((line) => this._convertToPattern(line, gitignore.path))
             .filter((line) => line !== void 0) as Pattern[];
     }
 
@@ -25,10 +26,11 @@ export class PatternConverter {
      *
      * @private
      * @param {string} line
+     * @param {string} path
      * @returns {(Pattern | void)}
      * @memberof PatternConverter
      */
-    public _convertToPattern(line: string): Pattern | void {
+    private _convertToPattern(line: string, path: string): Pattern | void {
         if (this._canBeIgnored(line)) {
             return;
         }
@@ -50,6 +52,9 @@ export class PatternConverter {
         ) {
             glob = `**/${glob}`;
         }
+
+        // prefix with path
+        glob = path !== '.' ? `${path}/${glob}` : glob;
 
         return { glob, hide, line };
     }

@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, TextDocument, workspace } from 'vscode';
+import { commands, ExtensionContext, workspace } from 'vscode';
 
 import { GitignoreReader } from './gitignore-reader';
 import { PatternConverter } from './pattern-converter';
@@ -12,7 +12,7 @@ export class GitignoreHider {
     ) {}
 
     public registerCommands(context: ExtensionContext): void {
-        let disposable = commands.registerCommand('extension.hideGitignored', () => {
+        const disposable = commands.registerCommand('extension.hideGitignored', () => {
             this.run();
         });
 
@@ -20,23 +20,20 @@ export class GitignoreHider {
     }
 
     public async run(): Promise<void> {
-        const files = await workspace.findFiles('.gitignore');
+        const files = await workspace.findFiles('**/.gitignore');
 
-        // TODO support multiple .gitignore files in subfolders
         if (files.length < 1) {
             return;
         }
 
-        const document = await workspace.openTextDocument(files.pop());
-        await this._exec(document);
-    }
+        const handlers = files.map((file) => workspace.openTextDocument(file));
+        const docs = await Promise.all(handlers);
 
-    private async _exec(document: TextDocument): Promise<void> {
-        const lines = this._reader.read(document);
-        const patterns = this._converter.convert(lines);
-        // patterns.forEach((pattern) =>
-        //     console.log(`${pattern.line} -> ${pattern.glob} (= ${pattern.hide})`),
-        // );
-        this._settings.update(patterns);
+        const patterns = docs
+            .map((doc) => this._reader.read(doc))
+            .map((gitignore) => this._converter.convert(gitignore))
+            .reduce((prev, cur) => cur.concat(prev), []);
+
+        await this._settings.update(patterns);
     }
 }
