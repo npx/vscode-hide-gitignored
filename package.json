@@ -3,7 +3,7 @@
     "displayName": "hide-gitignored",
     "description": "Hide files from the Explorer panel that match the patterns in .gitignore",
     "version": "1.0.0",
-    "publisher": "npx",
+    "publisher": "npxms",
     "engines": {
         "vscode": "^1.19.0"
     },
