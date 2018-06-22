@@ -12,14 +12,18 @@ export class GitignoreHider {
     ) {}
 
     public registerCommands(context: ExtensionContext): void {
-        const disposable = commands.registerCommand('extension.hideGitignored', () => {
+        const hideDisposable = commands.registerCommand('extension.hideGitignored', () => {
             this.run();
         });
+        context.subscriptions.push(hideDisposable);
 
-        context.subscriptions.push(disposable);
+        const showDisposable = commands.registerCommand('extension.showGitignored', () => {
+            this.run(true);
+        });
+        context.subscriptions.push(showDisposable);
     }
 
-    public async run(): Promise<void> {
+    public async run(show = false): Promise<void> {
         const files = await workspace.findFiles('**/.gitignore');
 
         if (files.length < 1) {
@@ -34,6 +38,10 @@ export class GitignoreHider {
             .map((gitignore) => this._converter.convert(gitignore))
             .reduce((prev, cur) => cur.concat(prev), []);
 
-        await this._settings.update(patterns);
+        if (show) {
+            await this._settings.show(patterns);
+        } else {
+            await this._settings.hide(patterns);
+        }
     }
 }

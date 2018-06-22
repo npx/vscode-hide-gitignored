@@ -11,7 +11,8 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.hideGitignored"
+        "onCommand:extension.hideGitignored",
+        "onCommand:extension.showGitignored"
     ],
     "repository": {
         "type": "git",
@@ -23,6 +24,10 @@
             {
                 "command": "extension.hideGitignored",
                 "title": "Hide Gitignored: Hide files ignored by .gitignore"
+            },
+            {
+                "command": "extension.showGitignored",
+                "title": "Show Gitignored: Show files ignored by .gitignore"
             }
         ]
     },
