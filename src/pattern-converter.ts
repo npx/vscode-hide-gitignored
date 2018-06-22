@@ -48,7 +48,7 @@ export class PatternConverter {
             glob = text.substr(1);
         } else if (
             !text.startsWith('**') &&
-            (text.indexOf('/') < 0 || text.indexOf('/') === text.length)
+            (text.indexOf('/') < 0 || text.endsWith('/'))
         ) {
             glob = `**/${glob}`;
         }
