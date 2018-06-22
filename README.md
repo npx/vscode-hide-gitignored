@@ -7,12 +7,6 @@ Upon running the registered command, the workspace's `.gitignore` files are
 read and converted to `files.exclude` rules that vscode can interpret.
 Your workspace settings will be created or updated.
 
-## Release Notes
-
-### 1.0.0
-
-Initial release
-
 ## Acknowledgement
 
 Credit goes to [vscode-ignore-gitignore](https://github.com/stubailo/vscode-ignore-gitignore),

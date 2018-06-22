@@ -1,7 +1,9 @@
 # Change Log
-All notable changes to the "hide-gitignored" extension will be documented in this file.
 
-Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
+## [1.0.1]
+- added a "Show Gitignored" command
+- fixed minor bug in converter
+- when writing to workspace settings, do not overwrite or delete existing file exclusion rules
 
-## [Unreleased]
+## [1.0.0]
 - Initial release
