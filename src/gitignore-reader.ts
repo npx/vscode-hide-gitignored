@@ -17,13 +17,13 @@ export class GitignoreReader {
      * @returns {Gitignore}
      * @memberof GitignoreReader
      */
-    public read(document: TextDocument): Gitignore {
+    public read(document: TextDocument, isGlobal: boolean = false): Gitignore {
         const lineCount = document.lineCount;
         const lines: string[] = [];
         for (let index = 0; index < lineCount; index++) {
             lines.push(document.lineAt(index).text);
         }
         const path = dirname(workspace.asRelativePath(document.fileName));
-        return { lines, path };
+        return { lines, path, isGlobal };
     }
 }
