@@ -1,5 +1,8 @@
 # Change Log
 
+## [1.1.0]
+- upgraded vscode extension api
+
 ## [1.0.1]
 - added a "Show Gitignored" command
 - fixed minor bug in converter
