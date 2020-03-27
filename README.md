@@ -15,5 +15,5 @@ which unfortunately is not maintained anymore. I have been given
 re-release.
 
 ## TODO
-* run on saving .gitignore files [+ setting]
+* ~~run on saving .gitignore files [+ setting]~~
 * tests
