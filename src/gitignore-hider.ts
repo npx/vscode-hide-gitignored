@@ -1,4 +1,4 @@
-import { commands, ExtensionContext, workspace } from 'vscode';
+import { commands, ExtensionContext, workspace, TextDocument } from 'vscode';
 
 import { GitignoreReader } from './gitignore-reader';
 import { PatternConverter } from './pattern-converter';
@@ -21,6 +21,27 @@ export class GitignoreHider {
             this.run(true);
         });
         context.subscriptions.push(showDisposable);
+
+        const settings = workspace.getConfiguration();
+        const enableHideOnSave = commands.registerCommand('extension.enableHideOnSave', () => {
+            settings.update('hide-gitignored.HideOnSave', true);
+        });
+        context.subscriptions.push(enableHideOnSave);
+
+        const disableHideOnSave = commands.registerCommand('extension.disableHideOnSave', () => {
+            settings.update('hide-gitignored.HideOnSave', false);
+        });
+        context.subscriptions.push(disableHideOnSave);
+
+        workspace.onDidSaveTextDocument((document: TextDocument) => {
+            // If user save a .gitignore file and HideOnSave is true hide file in .gitignore
+            if (
+                settings.get('hide-gitignored.HideOnSave', true) &&
+                !!document.fileName.match('^.*\\.gitignore$')
+            ) {
+                this.run();
+            }
+        });
     }
 
     public async run(show = false): Promise<void> {
@@ -30,12 +51,12 @@ export class GitignoreHider {
             return;
         }
 
-        const handlers = files.map((file) => workspace.openTextDocument(file));
+        const handlers = files.map(file => workspace.openTextDocument(file));
         const docs = await Promise.all(handlers);
 
         const patterns = docs
-            .map((doc) => this._reader.read(doc))
-            .map((gitignore) => this._converter.convert(gitignore))
+            .map(doc => this._reader.read(doc))
+            .map(gitignore => this._converter.convert(gitignore))
             .reduce((prev, cur) => cur.concat(prev), []);
 
         if (show) {

@@ -2,7 +2,7 @@
     "name": "hide-gitignored",
     "displayName": "Hide Gitignored",
     "description": "Hide files from the Explorer panel that match the patterns in .gitignore",
-    "version": "1.1.0",
+    "version": "1.1.1",
     "publisher": "npxms",
     "engines": {
         "vscode": "^1.43.0"
@@ -11,8 +11,7 @@
         "Other"
     ],
     "activationEvents": [
-        "onCommand:extension.hideGitignored",
-        "onCommand:extension.showGitignored"
+        "*"
     ],
     "repository": {
         "type": "git",
@@ -28,8 +27,28 @@
             {
                 "command": "extension.showGitignored",
                 "title": "Show Gitignored: Show files ignored by .gitignore"
+            },
+            {
+                "command": "extension.enableHideOnSave",
+                "title": "Enable HideOnSave: Hides the files indicated in the .gitingnore when saved (Workspace scope)"
+            },
+            {
+                "command": "extension.disableHideOnSave",
+                "title": "Disable HideOnsSave: Do nothing when .gitignore is saved"
             }
-        ]
+        ],
+        "configuration": {
+            "type": "object",
+            "title": "Hide gitignored",
+            "properties": {
+                "hide-gitignored.HideOnSave": {
+                    "type": "boolean",
+                    "default": true,
+                    "description": "Hides the files indicated in the .gitingnore when saved",
+                    "scope": "window"
+                }
+            }
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
