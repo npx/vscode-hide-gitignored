@@ -46,6 +46,12 @@
                     "default": true,
                     "description": "Hides the files indicated in the .gitingnore when saved",
                     "scope": "window"
+                },
+                "hide-gitignored.include.git/info/exclude": {
+                    "type": "boolean",
+                    "default": false,
+                    "description": "Hides even the files indicated in the .git/info/exclude file.",
+                    "scope": "window"
                 }
             }
         }

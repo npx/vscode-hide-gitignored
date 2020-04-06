@@ -1,8 +1,10 @@
-import { commands, ExtensionContext, workspace, TextDocument } from 'vscode';
+import { commands, workspace, TextDocument, Uri } from 'vscode';
 
 import { GitignoreReader } from './gitignore-reader';
 import { PatternConverter } from './pattern-converter';
 import { SettingsAccessor } from './settings-accessor';
+
+import * as fs from 'fs';
 
 export class GitignoreHider {
     constructor(
@@ -11,41 +13,49 @@ export class GitignoreHider {
         private _settings: SettingsAccessor,
     ) {}
 
-    public registerCommands(context: ExtensionContext): void {
-        const hideDisposable = commands.registerCommand('extension.hideGitignored', () => {
-            this.run();
-        });
-        context.subscriptions.push(hideDisposable);
-
-        const showDisposable = commands.registerCommand('extension.showGitignored', () => {
-            this.run(true);
-        });
-        context.subscriptions.push(showDisposable);
-
+    public registerCommands(): void {
         const settings = workspace.getConfiguration();
-        const enableHideOnSave = commands.registerCommand('extension.enableHideOnSave', () => {
+        const addGitInfoExclude = settings.get('hide-gitignored.include.git/info/exclude', false);
+
+        commands.registerCommand('extension.hideGitignored', () => {
+            this.run(false, addGitInfoExclude);
+        });
+
+        commands.registerCommand('extension.showGitignored', () => {
+            this.run(true, addGitInfoExclude);
+        });
+
+        commands.registerCommand('extension.enableHideOnSave', () => {
             settings.update('hide-gitignored.HideOnSave', true);
         });
-        context.subscriptions.push(enableHideOnSave);
 
-        const disableHideOnSave = commands.registerCommand('extension.disableHideOnSave', () => {
+        commands.registerCommand('extension.disableHideOnSave', () => {
             settings.update('hide-gitignored.HideOnSave', false);
         });
-        context.subscriptions.push(disableHideOnSave);
 
         workspace.onDidSaveTextDocument((document: TextDocument) => {
-            // If user save a .gitignore file and HideOnSave is true hide file in .gitignore
             if (
                 settings.get('hide-gitignored.HideOnSave', true) &&
-                !!document.fileName.match('^.*\\.gitignore$')
+                !!document.fileName.match(/^.*(\.gitignore|\.git.info.exclude)$/g)
             ) {
-                this.run();
+                this.run(false, addGitInfoExclude);
             }
         });
     }
 
-    public async run(show = false): Promise<void> {
-        const files = await workspace.findFiles('**/.gitignore');
+    public async run(show: boolean, addGitInfoExclude: boolean): Promise<void> {
+        let files = await workspace.findFiles('**/.gitignore');
+
+        if (addGitInfoExclude) {
+            const folders = workspace.workspaceFolders;
+            if (folders != undefined) {
+                files = files.concat(
+                    folders
+                        .map(folder => Uri.file(folder.uri.path + '/.git/info/exclude'))
+                        .filter(file => fs.existsSync(file.fsPath)),
+                );
+            }
+        }
 
         if (files.length < 1) {
             return;

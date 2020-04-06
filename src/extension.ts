@@ -11,7 +11,7 @@ export function activate(context: ExtensionContext): void {
         new PatternConverter(),
         new SettingsAccessor(context),
     );
-    gitignoreHider.registerCommands(context);
+    gitignoreHider.registerCommands();
 }
 
 export function deactivate(): void {}
