@@ -24,6 +24,6 @@ export class GitignoreReader {
             lines.push(document.lineAt(index).text);
         }
         const path = dirname(workspace.asRelativePath(document.fileName));
-        return { lines, path };
+        return { lines, path: path.replace(/.\.git.info/g, '') };
     }
 }

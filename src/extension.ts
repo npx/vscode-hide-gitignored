@@ -9,9 +9,9 @@ export function activate(context: ExtensionContext): void {
     const gitignoreHider = new GitignoreHider(
         new GitignoreReader(),
         new PatternConverter(),
-        new SettingsAccessor(),
+        new SettingsAccessor(context),
     );
-    gitignoreHider.registerCommands(context);
+    gitignoreHider.registerCommands();
 }
 
 export function deactivate(): void {}
