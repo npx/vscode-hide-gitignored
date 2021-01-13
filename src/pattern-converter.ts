@@ -17,7 +17,7 @@ export class PatternConverter {
      */
     public convert(gitignore: Gitignore): Pattern[] {
         return gitignore.lines
-            .map((line) => this._convertToPattern(line, gitignore.path))
+            .map((line) => this._convertToPattern(line, gitignore.path, gitignore.isGlobal))
             .filter((line) => line !== void 0) as Pattern[];
     }
 
@@ -30,7 +30,7 @@ export class PatternConverter {
      * @returns {(Pattern | void)}
      * @memberof PatternConverter
      */
-    private _convertToPattern(line: string, path: string): Pattern | void {
+    private _convertToPattern(line: string, path: string, isGlobalGitignore: boolean): Pattern | void {
         if (this._canBeIgnored(line)) {
             return;
         }
@@ -54,7 +54,7 @@ export class PatternConverter {
         }
 
         // prefix with path
-        glob = path !== '.' ? `${path}/${glob}` : glob;
+        glob = path === '.' || isGlobalGitignore ? glob : `${path}/${glob}`;
 
         return { glob, hide, line };
     }
