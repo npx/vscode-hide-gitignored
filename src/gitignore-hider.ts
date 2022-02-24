@@ -1,8 +1,9 @@
-import { commands, ExtensionContext, workspace } from 'vscode';
+import { commands, ExtensionContext, RelativePattern, workspace } from 'vscode';
 
 import { GitignoreReader } from './gitignore-reader';
 import { PatternConverter } from './pattern-converter';
 import { SettingsAccessor } from './settings-accessor';
+import { WorkspaceUtils } from './workspace-utils';
 
 export class GitignoreHider {
     constructor(
@@ -24,18 +25,24 @@ export class GitignoreHider {
     }
 
     public async run(show = false): Promise<void> {
-        const files = await workspace.findFiles('**/.gitignore');
+        const editorResource = WorkspaceUtils.getActiveWorkspaceResource();
+        if (!editorResource) {
+            return;
+        }
+        const workspaceFolder = workspace.getWorkspaceFolder(editorResource);
+        const pattern = new RelativePattern(workspaceFolder!, '**/.gitignore');
+        const files = await workspace.findFiles(pattern);
 
         if (files.length < 1) {
             return;
         }
 
-        const handlers = files.map((file) => workspace.openTextDocument(file));
+        const handlers = files.map(file => workspace.openTextDocument(file));
         const docs = await Promise.all(handlers);
 
         const patterns = docs
-            .map((doc) => this._reader.read(doc))
-            .map((gitignore) => this._converter.convert(gitignore))
+            .map(doc => this._reader.read(doc))
+            .map(gitignore => this._converter.convert(gitignore))
             .reduce((prev, cur) => cur.concat(prev), []);
 
         if (show) {
