@@ -25,12 +25,11 @@ export class GitignoreHider {
     }
 
     public async run(show = false): Promise<void> {
-        const editorResource = WorkspaceUtils.getActiveWorkspaceResource();
-        if (!editorResource) {
+        const workspaceFolder = WorkspaceUtils.getActiveWorkspaceFolder();
+        if (!workspaceFolder) {
             return;
         }
-        const workspaceFolder = workspace.getWorkspaceFolder(editorResource);
-        const pattern = new RelativePattern(workspaceFolder!, '**/.gitignore');
+        const pattern = new RelativePattern(workspaceFolder, '**/.gitignore');
         const files = await workspace.findFiles(pattern);
 
         if (files.length < 1) {
