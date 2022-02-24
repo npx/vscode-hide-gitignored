@@ -1,6 +1,7 @@
 import { workspace, WorkspaceConfiguration } from 'vscode';
 
 import { Pattern } from './pattern.model';
+import { WorkspaceUtils } from './workspace-utils';
 
 /**
  * Handles editing a workspace settings file
@@ -10,14 +11,20 @@ import { Pattern } from './pattern.model';
  */
 export class SettingsAccessor {
     public async hide(patterns: Pattern[]): Promise<void> {
-        const settings = workspace.getConfiguration();
+        const settings = workspace.getConfiguration(
+            undefined,
+            WorkspaceUtils.getActiveWorkspaceResource(),
+        );
         const hidden = this.getWorkspaceValue(settings);
         const newSettings = Object.assign(hidden || {}, this._buildSettingsObject(patterns));
         settings.update('files.exclude', newSettings);
     }
 
     public async show(patterns: Pattern[]): Promise<void> {
-        const settings = workspace.getConfiguration();
+        const settings = workspace.getConfiguration(
+            undefined,
+            WorkspaceUtils.getActiveWorkspaceResource(),
+        );
         const hidden = this.getWorkspaceValue(settings);
 
         if (!hidden) {
