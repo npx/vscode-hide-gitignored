@@ -30,12 +30,12 @@ export class GitignoreHider {
             return;
         }
 
-        const handlers = files.map((file) => workspace.openTextDocument(file));
+        const handlers = files.map(file => workspace.openTextDocument(file));
         const docs = await Promise.all(handlers);
 
         const patterns = docs
-            .map((doc) => this._reader.read(doc))
-            .map((gitignore) => this._converter.convert(gitignore))
+            .map(doc => this._reader.read(doc))
+            .map(gitignore => this._converter.convert(gitignore))
             .reduce((prev, cur) => cur.concat(prev), []);
 
         if (show) {
@@ -43,5 +43,7 @@ export class GitignoreHider {
         } else {
             await this._settings.hide(patterns);
         }
+        //sets context menu visibility
+        commands.executeCommand('setContext', 'gitignore.visible', show);
     }
 }
