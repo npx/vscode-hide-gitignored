@@ -1,7 +1,7 @@
 # hide-gitignored
 
 Hide files from the file Explorer that are ignored by your workspace's 
-`.gitignore` files.
+`.gitignore` files, right-click any `.gitignore` to globally toggle visibility of ignored files.
 
 Upon running the registered command, the workspace's `.gitignore` files are
 read and converted to `files.exclude` rules that vscode can interpret.
@@ -17,3 +17,5 @@ re-release.
 ## TODO
 * run on saving .gitignore files [+ setting]
 * tests
+* toggle keybind default using `'when'` statements
+* settings for local .gitignore context

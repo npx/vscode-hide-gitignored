@@ -2,7 +2,7 @@
     "name": "hide-gitignored",
     "displayName": "Hide Gitignored",
     "description": "Hide files from the Explorer panel that match the patterns in .gitignore",
-    "version": "1.1.0",
+    "version": "1.2.0",
     "publisher": "npxms",
     "engines": {
         "vscode": "^1.43.0"
@@ -23,13 +23,25 @@
         "commands": [
             {
                 "command": "extension.hideGitignored",
-                "title": "Hide Gitignored: Hide files ignored by .gitignore"
+                "title": "Globally hide files ignored by .gitignore"
             },
             {
                 "command": "extension.showGitignored",
-                "title": "Show Gitignored: Show files ignored by .gitignore"
+                "title": "Globally show files ignored by .gitignore"
             }
-        ]
+        ],
+        "menus": {
+            "explorer/context": [
+                {
+                    "when": "resourceFilename == .gitignore && gitignore.visible",
+                    "command": "extension.hideGitignored"
+                },
+                {
+                    "when": "resourceFilename == .gitignore && !gitignore.visible",
+                    "command": "extension.showGitignored"
+                }
+            ]
+        }
     },
     "scripts": {
         "vscode:prepublish": "npm run compile",
